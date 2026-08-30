@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-	"log"
 	"strings"
 
 	"github.com/gin-gonic/gin"
