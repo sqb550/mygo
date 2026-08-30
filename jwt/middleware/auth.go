@@ -40,7 +40,7 @@ func Auth[T any](mustLogged bool, scopes ...string) gin.HandlerFunc {
 				reply.Fail(ctx, kit.CodeLoginExpired)
 				return
 			}
-			reply.Fail(ctx, kit.CodeDataParseError)
+			reply.Fail(ctx, kit.CodeLoginInvalid)
 			return
 		}
 
