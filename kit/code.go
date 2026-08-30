@@ -13,6 +13,7 @@ var (
 	CodeDataConflict       = NewCode(200207, "数据冲突")
 	CodeServiceMaintenance = NewCode(200208, "系统维护中")
 	CodeTooFrequently      = NewCode(200209, "操作过于频繁")
+	CodeLoginInvalid       = NewCode(200210, "登录状态无效，请重新登录")
 )
 
 type Code struct {
