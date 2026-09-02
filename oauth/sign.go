@@ -3,6 +3,7 @@ package oauth
 import (
 	"crypto/rsa"
 	"encoding/hex"
+	"fmt"
 	"math/big"
 	"strconv"
 
@@ -15,20 +16,20 @@ type publicKeyData struct {
 }
 
 // getPublicKey 获取加密密钥
-func getPublicKey(client *resty.Client) (publicKey *rsa.PublicKey, err error) {
+func (o *OAuth) getPublicKey(client *resty.Client) (publicKey *rsa.PublicKey, err error) {
 	var data publicKeyData
 	_, err = client.R().
 		SetResult(&data).
-		Get(PublicKeyUrl)
+		Get(o.conf.PublicKeyURL)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("获取统一认证加密公钥错误: %w", err)
 	}
 	modulus := new(big.Int)
 	modulus.SetString(data.Modulus, 16)
 
 	e, err := strconv.ParseInt(data.Exponent, 16, 32)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("解析统一认证公钥指数错误: %w", err)
 	}
 	exponent := int(e)
 	return &rsa.PublicKey{
@@ -54,8 +55,8 @@ func rsaEncrypt(publicKey *rsa.PublicKey, text []byte) []byte {
 }
 
 // getEncryptedPassword 密码加密
-func getEncryptedPassword(client *resty.Client, password string) (string, error) {
-	key, err := getPublicKey(client)
+func (o *OAuth) getEncryptedPassword(client *resty.Client, password string) (string, error) {
+	key, err := o.getPublicKey(client)
 	if err != nil {
 		return "", err
 	}
